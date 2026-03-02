@@ -1,5 +1,4 @@
-#include <stddef.h>
-#include <Matrix.h>
+#include "Matrix.h"
 
 const IndexError Matrix::indexError_ = IndexError{"Index out of range"};
 
