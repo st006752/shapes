@@ -1,6 +1,11 @@
 #include <iostream>
 #include <ctime>
 
+enum class MutualArrange {
+	POINTCOINCIDENT, // Две точки совпадают
+	POINTDISTANCE // Две точки на заданном расстоянии
+
+};
 
 template <typename num>
 class Point {
