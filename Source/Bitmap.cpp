@@ -4,9 +4,9 @@
 Bitmap::Bitmap(size_t r, size_t c) {
 	matrix_ = new Matrix(r, c);
 }
-Bitmap::Bitmap(const char* filename);
+Bitmap::Bitmap(const char* filename) {}
 
-~Bitmap() {
+Bitmap::~Bitmap() {
 	delete matrix_;
 }
 
