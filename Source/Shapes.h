@@ -1,3 +1,4 @@
+#pragma once
 class Identi{
 	bool operator==(Identi i2);
 };

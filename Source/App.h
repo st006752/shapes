@@ -1,5 +1,6 @@
 #pragma once 
-
+#include "Storage.h"
+#include "Shapes.h"
 enum class PrimitiveType{
 	POINT,
 	SEGMENT,
@@ -24,9 +25,9 @@ public:
 	Identi addObject(PrimitiveType type);
 
 	// Метод для добавления пожеланий о расположении
-        addArrange(MutualArrangeType type,  Storage<Identi> ii)
+	void addArrange(MutualArrangeType type, Storage<Identi> ii);
       	// Метод для добавления пожеланий о расположении с дополнительным параметром
-	addArrange(MutualArrangeType type,  Storage<Identi> ii, double value)
+	void addArrange(MutualArrangeType type, Storage<Identi> ii, double value);
 
 
 private:

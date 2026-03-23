@@ -13,5 +13,16 @@ void Bitmap::Set(size_t r, size_t c, bool state) {
 }
 
 void Bitmap::Save(const char* filename) {
-	std::ifstream in;
+	std::ofstream out;
+    out.open(filename);
+	if (!out.is_open()) {
+		throw out.exceptions();
+	}
+	size_t r = matrix_.rows();
+	size_t c = matrix_.cols();
+	for (size_t y = 0; y < r; ++y) {
+		for (size_t x = 0; x < c; ++x) {
+			out << matrix_.get(y, x);
+		}
+	}
 }

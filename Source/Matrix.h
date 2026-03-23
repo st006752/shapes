@@ -14,5 +14,8 @@ public:
 
     bool get(size_t row, size_t col) const;
 
+    size_t rows() const;
+    size_t cols() const;
+
     void set(size_t row, size_t col, bool state);
 };

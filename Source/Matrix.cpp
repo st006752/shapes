@@ -33,3 +33,10 @@ void Matrix::set(size_t row, size_t col, bool state)
     checkIndexes_(row, col);
     array_[row][col] = state;
 }
+
+size_t Matrix::rows() const {
+    return rows_;
+}
+size_t Matrix::cols() const {
+    return cols_;
+}
