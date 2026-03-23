@@ -1,11 +1,6 @@
 #include <iostream>
 #include <ctime>
 
-enum class MutualArrange {
-	POINTCOINCIDENT, // Две точки совпадают
-	POINTDISTANCE // Две точки на заданном расстоянии
-
-};
 
 template <typename num>
 class Point {
@@ -89,31 +84,25 @@ public:
 };
 
 int main() {
-    srand(static_cast<unsigned int>(time(0)));
+    
+     App app;
+     Identi i1 = app.addObject(POINT);
+     Identi i2 = app.addObject(POINT);
 
-    Storage<Point<double>> pointStorage;
-    Storage<Segment<double>> segmentStorage;
+     app.addArange(POINTCOINCIDENT,i1, i2);
 
-    double x, y;
-    std::cout << "Input x and y: ";
-    std::cin >> x >> y;
+     Identi i3 = app.addObject(SEGMENT);
+     Identi i4 = app.addObject(SEGMENT);
 
-    Point<double> pd1(x, y);
-    pointStorage.add_item(pd1);
-    std::cout << "+ added point: (" << pd1.px() << ", " << pd1.py() << ")\n";
+     app.addArange(SEGMENTSNORMAL,i3,i4);
 
-    pd1.set_x(rand() % 100);
-    pd1.set_y(rand() % 100);
-    pointStorage.add_item(pd1);
-    std::cout << "+ added point: (" << pd1.px() << ", " << pd1.py() << ")\n";
+     Identi i5 = app.addObject(POINT);
 
-    Point<double> pd2(3, 5);
-    pointStorage.add_item(pd2);
-    std::cout << "+ added point: (" << pd2.px() << ", " << pd2.py() << ")\n";
+     app.addArange(POINTOBELONGSEGMENT,i5,i3);
+     app.addArange(POINTOBELONGSEGMENT,i3,i5);
 
-    for (size_t i = 0; i < pointStorage.get_size(); ++i) {
-        Point<double>& p = pointStorage.get_item(i);
-        std::cout << "point: (" << p.px() << ", " << p.py() << ")\n";
-    }
+     app.addArange(SEGMENTLENGTH,i3 , 10.1 );
+
+
     return 0;
 }
