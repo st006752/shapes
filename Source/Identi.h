@@ -1,11 +1,11 @@
 #pragma once 
 
 class Identi{
-	bool operator==(Identi i2);
+	int ID;
+public:
+    Identi(int id = 0) : ID(id) {}
+    int getID() const { return ID; }
+    bool operator==(const Identi& other) const {
+        return ID == other.ID;
+    }
 };
-
-bool operator==(Identi i1, Identi i2){
-
-	return false;
-}
-
