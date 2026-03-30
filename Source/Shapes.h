@@ -3,8 +3,57 @@
 #include <cmath>
 #include <iostream>
 
-template <typename num> class Point {
-    Identi id;
+enum class PrimitiveType{ POINT, SEGMENT, CIRCLE };
+
+enum class MutualArrangeType {
+	POINTCOINCIDENT, // Две точки совпадают
+	POINTDISTANCE, // Две точки на заданном расстоянии
+	POINTSSYMMETRYSEGMENT,  // Две точки симметричны относительно отрезка      
+	POINTBELONGSTOSEGMENT,
+	SEGMENTSNORMAL, // Два отрезка ортогональны
+	SEGMENTVERTICAL,
+	SEGMENTLENGTH
+};
+
+
+class GeometricObject {
+protected:
+    Identi id_;
+    
+public:
+    GeometricObject() {}
+    GeometricObject(const Identi& id) : id_(id) {}
+    ~GeometricObject() {}
+    
+    Identi getId() const { return id_; }
+    void setId(const Identi& id) { id_ = id; }
+    
+    void print() const {}
+};
+
+class Relation : public GeometricObject {
+    MutualArrangeType type_;
+    Storage<Identi> objects_;
+    double value_;
+    
+public:
+    Relation() : value_(0.0) {}
+    
+    Relation(const Identi& id, MutualArrangeType type, const Storage<Identi>& objects, double value = 0.0)
+	: GeometricObject(id), type_(type), objects_(objects), value_(value) {}
+    
+    MutualArrangeType getType() const { return type_; }
+    const Storage<Identi>& getObjects() const { return objects_; }
+    double getValue() const { return value_; }
+    
+    void print() const {
+        std::cout << "Relation ID: " << id_.getID() 
+                  << ", Type: " << static_cast<int>(type_) + 1
+                  << ", Objects: " << objects_.getSize() << std::endl;
+    }
+};
+
+template <typename num> class Point : public GeometricObject {
     num x_, y_;
 public:
     Point(num x = 0, num y = 0) : x_(x), y_(y) {}
@@ -14,8 +63,8 @@ public:
     void set_x(num x) { x_ = x; }
     void set_y(num y) { y_ = y; }
     
-    Identi getId() const { return id; }
-    void setId(const Identi& new_id) { id = new_id; }
+    Identi getId() const { return id_; }
+    void setId(const Identi& new_id) { id_ = new_id; }
 };
 
 template <typename num>
@@ -26,8 +75,7 @@ std::ostream& operator<<(std::ostream& os, const Point<num>& point) {
     return os;
 }
 
-template <typename num> class Segment {
-    Identi id;
+template <typename num> class Segment : public GeometricObject {
     Point<num> p1_, p2_;
     
 public:
@@ -45,8 +93,8 @@ public:
         return std::sqrt(dx*dx + dy*dy);  
     }
     
-    Identi getId() const { return id; }
-    void setId(const Identi& new_id) { id = new_id; }
+    Identi getId() const { return id_; }
+    void setId(const Identi& new_id) { id_ = new_id; }
 };
 
 template <typename num>
@@ -57,8 +105,7 @@ std::ostream& operator<<(std::ostream& os, const Segment<num>& segment) {
     return os;
 }
 
-template<typename num> class Circle {
-    Identi id;
+template <typename num> class Circle : public GeometricObject {
     Point<num> center_;
     double radius_;
     
@@ -72,8 +119,8 @@ public:
     void set_center(const Point<num>& center) { center_ = center; }
     void set_radius(double radius) { radius_ = radius; }
     
-    Identi getId() const { return id; }
-    void setId(const Identi& new_id) { id = new_id; }
+    Identi getId() const { return id_; }
+    void setId(const Identi& new_id) { id_ = new_id; }
 };
 
 template<typename num>

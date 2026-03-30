@@ -26,7 +26,7 @@ void printMutualArrangeTypes() {
 
 int main() {
     App app;
-    int choice;
+    int choice = 1;
     while (choice != 0) {
         printMenu();
         std::cin >> choice;

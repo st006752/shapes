@@ -3,23 +3,13 @@
 #include "Identi.h"
 #include "Shapes.h"
 
-enum class PrimitiveType{ POINT, SEGMENT, CIRCLE };
-
-enum class MutualArrangeType {
-	POINTCOINCIDENT, // Две точки совпадают
-	POINTDISTANCE, // Две точки на заданном расстоянии
-	POINTSSYMMETRYSEGMENT,  // Две точки симметричны относительно отрезка      
-	POINTBELONGSTOSEGMENT,
-	SEGMENTSNORMAL, // Два отрезка ортогональны
-	SEGMENTVERTICAL,
-	SEGMENTLENGTH
-};
 
 class App{
     static int count;
     Storage<Point<double>>   pointStorage_;
     Storage<Segment<double>> segmentStorage_;
     Storage<Circle<double>>  circleStorage_;
+	Storage<Relation>        relationStorage_;
     
 public:
     App(); 

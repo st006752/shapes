@@ -4,7 +4,7 @@
 
 int App::count = 0;
 
-App::App() : pointStorage_(), segmentStorage_(), circleStorage_() {}
+App::App() : pointStorage_(), segmentStorage_(), circleStorage_(), relationStorage_() {}
 
 Identi App::addObject(PrimitiveType type) {
     Identi newId(++count);
@@ -42,7 +42,7 @@ Identi App::addArrange(MutualArrangeType type, const Storage<Identi>& ii) {
 
 Identi App::addArrange(MutualArrangeType type, const Storage<Identi>& ii, double value) {
     Identi relationId(++count);
-    std::cout << "Created relation of type " << static_cast<int>(type) + 1<< " with ID: " << relationId.getID() 
+    std::cout << "Created relation of type " << static_cast<int>(type) +1<< " with ID: " << relationId.getID() 
               << " for " << ii.getSize() << " objects" << " with parameter: " << value << "\n";
     
     return relationId;
