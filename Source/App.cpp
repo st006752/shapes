@@ -49,5 +49,25 @@ Identi App::addArrange(MutualArrangeType type, const Storage<Identi>& ii, double
 }
 
 double App::measure(MutualArrangeType type, const Storage<Identi>& ii) {
-    return 0.0;
+    switch(type) {
+        case MutualArrangeType::POINTCOINCIDENT: {
+            Identi id1 = ii.getItem(0);
+            Identi id2 = ii.getItem(1);
+            
+            Point<double>* p1 = findObjectById(id1, pointStorage_);
+            Point<double>* p2 = findObjectById(id2, pointStorage_);
+
+            double dx = p1->x() - p2->x();
+            double dy = p1->y() - p2->y();
+
+            return std::sqrt(dx*dx + dy*dy);
+        }
+
+        case MutualArrangeType::POINTDISTANCE : {}
+        case MutualArrangeType::POINTBELONGSTOSEGMENT : {}
+        case MutualArrangeType::POINTSSYMMETRYSEGMENT : {}
+        case MutualArrangeType::SEGMENTLENGTH : {}
+        case MutualArrangeType::SEGMENTVERTICAL : {}
+        case MutualArrangeType::SEGMENTSNORMAL : {}
+    }
 }
