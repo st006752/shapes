@@ -7,7 +7,8 @@ COMPILER_OPTIONS = -c -std=c++17 -I../Source -I./googletest/googletest/include -
 GTEST_SRC = ./googletest/googletest/src/gtest-all.cc
 GTEST_MAIN = ./googletest/googletest/src/gtest_main.cc
 
-TEST_SRC = test.cpp ../Source/Matrix.cpp
+# TEST_SRC = test.cpp ../Source/Matrix.cpp
+TEST_SRC = test.cpp ../Source/App.cpp
 TEST_OBJ = $(TEST_SRC:.cpp=.o) $(GTEST_SRC:.cc=.o) $(GTEST_MAIN:.cc=.o)
 
 # --- test app ---
