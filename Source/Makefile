@@ -1,2 +1,2 @@
 all:
-	g++ -o app App.cpp main.cpp
+	g++ -o app App.cpp Relations.cpp main.cpp
