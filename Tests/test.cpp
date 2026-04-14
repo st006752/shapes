@@ -2,6 +2,11 @@
 #include <gtest/gtest.h>
 #include "../Source/Matrix.h"
 
+
+#include "../Source/App.h"
+#include "../Source/Relations.h"
+#include <cmath>
+
 // TEST (Matrix, CreateSquare)
 // {
 // 	const size_t R = 128;
@@ -52,9 +57,6 @@
 // }
 
 
-#include "../Source/App.h"
-#include <cmath>
-
 TEST(PointDistance, SamePoint) {
     App app;
     Identi p1 = app.addObject(PrimitiveType::POINT);
@@ -68,7 +70,29 @@ TEST(PointDistance, SamePoint) {
     ids.addItem(p1);
     ids.addItem(p1);
     
-    EXPECT_DOUBLE_EQ(app.measure(MutualArrangeType::POINTDISTANCE, ids), 0.0);
+    PointDistanceRelation relation(Identi(), ids);
+    EXPECT_DOUBLE_EQ(relation.measure(app), 0.0);
+}
+
+TEST(PointDistance, DifferentPoints) {
+    App app;
+    Identi p1 = app.addObject(PrimitiveType::POINT);
+    Identi p2 = app.addObject(PrimitiveType::POINT);
+
+    Storage<Point<double>>& points = const_cast<Storage<Point<double>>&>(app.getPoints());
+    Point<double>* point1 = app.findObjectById(p1, points);
+    Point<double>* point2 = app.findObjectById(p2, points);
+    point1->set_x(-1);
+    point1->set_y(-1);
+    point2->set_x(2);
+    point2->set_y(3);
+
+    Storage<Identi> ids;
+    ids.addItem(p1);
+    ids.addItem(p2);
+
+    PointDistanceRelation relation(Identi(), ids);
+    EXPECT_DOUBLE_EQ(relation.measure(app), 5.0);
 }
 
 TEST(PointCoincident, SamePoint) {
@@ -84,7 +108,8 @@ TEST(PointCoincident, SamePoint) {
     ids.addItem(p1);
     ids.addItem(p1);
     
-    EXPECT_DOUBLE_EQ(app.measure(MutualArrangeType::POINTCOINCIDENT, ids), 0.0);
+    PointCoincidentRelation relation(Identi(), ids);
+    EXPECT_DOUBLE_EQ(relation.measure(app), 0.0);
 }
 
 TEST(PointCoincident, DifferentPoints) {
@@ -105,6 +130,55 @@ TEST(PointCoincident, DifferentPoints) {
     ids.addItem(p1);
     ids.addItem(p2);
     
-    double distance = app.measure(MutualArrangeType::POINTCOINCIDENT, ids);
+    PointCoincidentRelation relation(Identi(), ids);
+    double distance = relation.measure(app);
     EXPECT_DOUBLE_EQ(distance, 5.0);
+}
+
+TEST(SegmentVertical, VerticalSegment) {
+    App app;
+    Identi s1 = app.addObject(PrimitiveType::SEGMENT);
+
+    Storage<Segment<double>>& segments = const_cast<Storage<Segment<double>>&>(app.getSegments());
+    Segment<double>* segment = app.findObjectById(s1, segments);
+    segment->set_p1(Point<double>(2, 0));
+    segment->set_p2(Point<double>(2, 5));
+
+    Storage<Identi> ids;
+    ids.addItem(s1);
+
+    SegmentVerticalRelation relation(Identi(), ids);
+    EXPECT_DOUBLE_EQ(relation.measure(app), 0.0);
+}
+
+TEST(SegmentVertical, NonVerticalSegment) {
+    App app;
+    Identi s1 = app.addObject(PrimitiveType::SEGMENT);
+
+    Storage<Segment<double>>& segments = const_cast<Storage<Segment<double>>&>(app.getSegments());
+    Segment<double>* segment = app.findObjectById(s1, segments);
+    segment->set_p1(Point<double>(0, 0));
+    segment->set_p2(Point<double>(4, 0));
+
+    Storage<Identi> ids;
+    ids.addItem(s1);
+
+    SegmentVerticalRelation relation(Identi(), ids);
+    EXPECT_DOUBLE_EQ(relation.measure(app), 4.0);
+}
+
+TEST(SegmentVertical, NegativeDirection) {
+    App app;
+    Identi s1 = app.addObject(PrimitiveType::SEGMENT);
+
+    Storage<Segment<double>>& segments = const_cast<Storage<Segment<double>>&>(app.getSegments());
+    Segment<double>* segment = app.findObjectById(s1, segments);
+    segment->set_p1(Point<double>(3, 1));
+    segment->set_p2(Point<double>(-2, 7));
+
+    Storage<Identi> ids;
+    ids.addItem(s1);
+
+    SegmentVerticalRelation relation(Identi(), ids);
+    EXPECT_DOUBLE_EQ(relation.measure(app), 5.0);
 }

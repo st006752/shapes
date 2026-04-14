@@ -1,10 +1,16 @@
 #include "App.h"
+#include "Relations.h"
 #include <iostream>
-#include <cmath>
 
 int App::count = 0;
 
 App::App() : pointStorage_(), segmentStorage_(), circleStorage_(), relationStorage_() {}
+
+App::~App() {
+    for (size_t i = 0; i < relationStorage_.getSize(); ++i) {
+        delete relationStorage_.getItem(i);
+    }
+}
 
 Identi App::addObject(PrimitiveType type) {
     Identi newId(++count);
@@ -34,40 +40,54 @@ Identi App::addObject(PrimitiveType type) {
 }
 
 Identi App::addArrange(MutualArrangeType type, const Storage<Identi>& ii) {
-    Identi relationId(++count);
-    std::cout << "Created relation of type " << static_cast<int>(type) + 1 << " with ID: " << relationId.getID() << " for " << ii.getSize() << " objects\n";
-    
-    return relationId;
+    return addArrange(type, ii, 0.0);
 }
 
 Identi App::addArrange(MutualArrangeType type, const Storage<Identi>& ii, double value) {
     Identi relationId(++count);
+    Relation* relation = nullptr;
+
+    switch(type) {
+        case MutualArrangeType::POINTCOINCIDENT:
+            relation = new PointCoincidentRelation(relationId, ii, value);
+            break;
+        case MutualArrangeType::POINTDISTANCE:
+            relation = new PointDistanceRelation(relationId, ii, value);
+            break;
+        case MutualArrangeType::POINTBELONGSTOSEGMENT:
+            relation = new PointBelongsToSegmentRelation(relationId, ii, value);
+            break;
+        case MutualArrangeType::POINTSSYMMETRYSEGMENT:
+            relation = new PointsSymmetrySegmentRelation(relationId, ii, value);
+            break;
+        case MutualArrangeType::SEGMENTLENGTH:
+            relation = new SegmentLengthRelation(relationId, ii, value);
+            break;
+        case MutualArrangeType::SEGMENTVERTICAL:
+            relation = new SegmentVerticalRelation(relationId, ii, value);
+            break;
+        case MutualArrangeType::SEGMENTSNORMAL:
+            relation = new SegmentsNormalRelation(relationId, ii, value);
+            break;
+    }
+
+    if (relation != nullptr) {
+        relationStorage_.addItem(relation);
+    }
+
     std::cout << "Created relation of type " << static_cast<int>(type) +1<< " with ID: " << relationId.getID() 
               << " for " << ii.getSize() << " objects" << " with parameter: " << value << "\n";
     
     return relationId;
 }
 
-double App::measure(MutualArrangeType type, const Storage<Identi>& ii) {
-    switch(type) {
-        case MutualArrangeType::POINTCOINCIDENT: {
-            Identi id1 = ii.getItem(0);
-            Identi id2 = ii.getItem(1);
-            
-            Point<double>* p1 = findObjectById(id1, pointStorage_);
-            Point<double>* p2 = findObjectById(id2, pointStorage_);
-
-            double dx = p1->x() - p2->x();
-            double dy = p1->y() - p2->y();
-
-            return std::sqrt(dx*dx + dy*dy);
+double App::sumErrors() {
+    double total = 0.0;
+    for (size_t i = 0; i < relationStorage_.getSize(); ++i) {
+        Relation* relation = relationStorage_.getItem(i);
+        if (relation != nullptr) {
+            total += relation->error(*this);
         }
-
-        case MutualArrangeType::POINTDISTANCE : {}
-        case MutualArrangeType::POINTBELONGSTOSEGMENT : {}
-        case MutualArrangeType::POINTSSYMMETRYSEGMENT : {}
-        case MutualArrangeType::SEGMENTLENGTH : {}
-        case MutualArrangeType::SEGMENTVERTICAL : {}
-        case MutualArrangeType::SEGMENTSNORMAL : {}
     }
+    return total;
 }

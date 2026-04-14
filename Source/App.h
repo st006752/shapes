@@ -9,16 +9,19 @@ class App{
     Storage<Point<double>>   pointStorage_;
     Storage<Segment<double>> segmentStorage_;
     Storage<Circle<double>>  circleStorage_;
-	Storage<Relation>        relationStorage_;
+	Storage<Relation*>       relationStorage_;
     
 public:
     App(); 
+    ~App();
     
     Identi addObject(PrimitiveType type);
     Identi addArrange(MutualArrangeType type, const Storage<Identi>& ii);
     Identi addArrange(MutualArrangeType type, const Storage<Identi>& ii, double value);
-    double measure(MutualArrangeType type, const Storage<Identi>& ii);
+    double sumErrors();
     
+    Storage<Point<double>>& getPoints() { return pointStorage_; }
+    Storage<Segment<double>>& getSegments() { return segmentStorage_; }
     const Storage<Point<double>>& getPoints() const { return pointStorage_; }
     const Storage<Segment<double>>& getSegments() const { return segmentStorage_; }
     const Storage<Circle<double>>& getCircles() const { return circleStorage_; }

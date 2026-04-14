@@ -1,5 +1,6 @@
 #pragma once
 #include "Identi.h"
+#include "Storage.h"
 #include <cmath>
 #include <iostream>
 
@@ -31,25 +32,32 @@ public:
     void print() const {}
 };
 
+class App;
+
 class Relation : public GeometricObject {
-    MutualArrangeType type_;
+protected:
     Storage<Identi> objects_;
     double value_;
     
 public:
-    Relation() : value_(0.0) {}
+    Relation(const Identi& id, const Storage<Identi>& objects, double value = 0.0)
+        : GeometricObject(id), objects_(objects), value_(value) {}
     
-    Relation(const Identi& id, MutualArrangeType type, const Storage<Identi>& objects, double value = 0.0)
-	: GeometricObject(id), type_(type), objects_(objects), value_(value) {}
+    virtual ~Relation() {}
     
-    MutualArrangeType getType() const { return type_; }
     const Storage<Identi>& getObjects() const { return objects_; }
     double getValue() const { return value_; }
     
+    virtual double measure(App& app) const = 0;
+    double error(App& app) const { return std::abs(measure(app) - value_); }
+    
+    virtual MutualArrangeType getType() const = 0;
+    
     void print() const {
         std::cout << "Relation ID: " << id_.getID() 
-                  << ", Type: " << static_cast<int>(type_) + 1
-                  << ", Objects: " << objects_.getSize() << std::endl;
+                  << ", Type: " << static_cast<int>(getType()) + 1
+                  << ", Objects: " << objects_.getSize()
+                  << ", Value: " << value_ << std::endl;
     }
 };
 
