@@ -10,10 +10,10 @@ enum class MutualArrangeType {
 	POINTCOINCIDENT, // Две точки совпадают
 	POINTDISTANCE, // Две точки на заданном расстоянии
 	POINTSSYMMETRYSEGMENT,  // Две точки симметричны относительно отрезка      
-	POINTBELONGSTOSEGMENT,
+	POINTBELONGSTOSEGMENT, // Точка должна принадлежать отрезку
 	SEGMENTSNORMAL, // Два отрезка ортогональны
-	SEGMENTVERTICAL,
-	SEGMENTLENGTH
+	SEGMENTVERTICAL, // Отрезок дб вертикальным
+	SEGMENTLENGTH // Отрезок должен иметь указанную длину
 };
 
 
@@ -49,6 +49,9 @@ public:
     double getValue() const { return value_; }
     
     virtual double measure(App& app) const = 0;
+	
+	virtual Storage<double> partitions(App& app) const = 0;
+
     double error(App& app) const { return std::abs(measure(app) - value_); }
     
     virtual MutualArrangeType getType() const = 0;
