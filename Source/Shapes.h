@@ -7,13 +7,13 @@
 enum class PrimitiveType{ POINT, SEGMENT, CIRCLE };
 
 enum class MutualArrangeType {
-	POINTCOINCIDENT,       // Две точки совпадают
-	POINTDISTANCE,         // Две точки на заданном расстоянии
-	POINTSSYMMETRYSEGMENT, // Две точки симметричны относительно отрезка
+	POINTCOINCIDENT, // Две точки совпадают
+	POINTDISTANCE, // Две точки на заданном расстоянии
+	POINTSSYMMETRYSEGMENT,  // Две точки симметричны относительно отрезка      
 	POINTBELONGSTOSEGMENT, // Точка должна принадлежать отрезку
-	SEGMENTSNORMAL,        // Два отрезка ортогональны
-	SEGMENTVERTICAL,       // Отрезок должен быть вертикальным
-	SEGMENTLENGTH          // Отрезок должен иметь указанную длину
+	SEGMENTSNORMAL, // Два отрезка ортогональны
+	SEGMENTVERTICAL, // Отрезок дб вертикальным
+	SEGMENTLENGTH // Отрезок должен иметь указанную длину
 };
 
 
@@ -51,11 +51,11 @@ public:
     const Storage<Identi>& getObjects() const { return objects_; }
     double getValue() const { return value_; }
     
-    virtual double measure() const = 0;
+    virtual double measure(App& app) const = 0;
 	
-	virtual Storage<double> partitions() const = 0;
+	virtual Storage<double> partitions(App& app) const = 0;
 
-    double error() const { return std::abs(measure() - value_); }
+    double error(App& app) const { return std::abs(measure(app) - value_); }
     
     virtual MutualArrangeType getType() const = 0;
 
