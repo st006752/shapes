@@ -7,13 +7,13 @@
 enum class PrimitiveType{ POINT, SEGMENT, CIRCLE };
 
 enum class MutualArrangeType {
-	POINTCOINCIDENT, // Две точки совпадают
-	POINTDISTANCE, // Две точки на заданном расстоянии
-	POINTSSYMMETRYSEGMENT,  // Две точки симметричны относительно отрезка      
+	POINTCOINCIDENT,       // Две точки совпадают
+	POINTDISTANCE,         // Две точки на заданном расстоянии
+	POINTSSYMMETRYSEGMENT, // Две точки симметричны относительно отрезка
 	POINTBELONGSTOSEGMENT, // Точка должна принадлежать отрезку
-	SEGMENTSNORMAL, // Два отрезка ортогональны
-	SEGMENTVERTICAL, // Отрезок дб вертикальным
-	SEGMENTLENGTH // Отрезок должен иметь указанную длину
+	SEGMENTSNORMAL,        // Два отрезка ортогональны
+	SEGMENTVERTICAL,       // Отрезок должен быть вертикальным
+	SEGMENTLENGTH          // Отрезок должен иметь указанную длину
 };
 
 
@@ -51,11 +51,25 @@ public:
     const Storage<Identi>& getObjects() const { return objects_; }
     double getValue() const { return value_; }
     
-    virtual double measure(App& app) const = 0;
+    virtual double measure() const = 0;
 	
-	virtual Storage<double> partitions(App& app) const = 0;
+	virtual Storage<double> partitions() const = 0;
 
-    double error(App& app) const { return std::abs(measure(app) - value_); }
+    double error() const { return std::abs(measure() - value_); }
+
+    Storage<double> errors() const {
+        static const double learning_rate = 0.1;  
+        Storage<double> grad = partitions();      
+        double current_error = error();           
+        Storage<double> predicted_errors;
+        
+        for (size_t i = 0; i < grad.getSize(); ++i) {
+            double new_error = current_error - learning_rate * grad.getItem(i);
+            predicted_errors.addItem(new_error);
+        }
+        
+        return predicted_errors;
+    }
     
     virtual MutualArrangeType getType() const = 0;
 
