@@ -52,7 +52,8 @@ public:
     double getValue() const { return value_; }
     
     virtual double measure() const = 0;
-	
+	virtual Storage<double> getParameters() const = 0;
+	virtual void setParameters(const Storage<double>&) = 0;	
 	virtual Storage<double> partitions() const = 0;
 
     double error() const { return std::abs(measure() - value_); }
