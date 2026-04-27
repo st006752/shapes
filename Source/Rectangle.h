@@ -1,14 +1,20 @@
+#pragma once
+#include "Identi.h"
+#include "Shapes.h"
 
-template <typename num> struct point {
-    num x;
-    num y;
-};
-template <typename num> class Rectangle{
-    public:
-    Rectangle(const point& tl, const point& br);
-    point<double> tl() const;
-    point<double> br() const;
-    private:
-    point<double> topleft_;
-    point<double> bottomright_;
+template <typename num> class Rectangle {
+    point_coor<num> top_left_;
+    point_coor<num> bottom_right_;
+
+public:
+    Rectangle(
+        const point_coor<num>& top_left     = point_coor<num>(),
+        const point_coor<num>& bottom_right = point_coor<num>())
+        : top_left_(top_left), bottom_right_(bottom_right) {}
+
+    const point_coor<num>& topLeft()     const { return top_left_; }
+    const point_coor<num>& bottomRight() const { return bottom_right_; }
+
+    void setTopLeft(const point_coor<num>& p)     { top_left_     = p; }
+    void setBottomRight(const point_coor<num>& p) { bottom_right_ = p; }
 };
