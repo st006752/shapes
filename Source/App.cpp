@@ -1,8 +1,8 @@
 #include "App.h"
 #include "Relations.h"
-#include <iostream>
-#include <algorithm>
 #include <cmath>
+#include <iostream>
+
 
 int App::count = 0;
 
@@ -76,10 +76,10 @@ Identi App::addArrange(MutualArrangeType type, const Storage<Identi> &ii,
     break;
   }
 
-    if (relation != nullptr) {
-        relation->setApp(this);
-        relationStorage_.addItem(relation);
-    }
+  if (relation != nullptr) {
+    relation->setApp(this);
+    relationStorage_.addItem(relation);
+  }
 
   std::cout << "Created relation of type " << static_cast<int>(type) + 1
             << " with ID: " << relationId.getID() << " for " << ii.getSize()
@@ -89,68 +89,34 @@ Identi App::addArrange(MutualArrangeType type, const Storage<Identi> &ii,
 }
 
 Rectangle<double> App::unionRect() const {
-  double minX = 0, minY = 0, maxX = 0, maxY = 0;
-  bool first = true;
+  Storage<Rectangle<double>> rects;
 
-  for (size_t i = 0; i < pointStorage_.getSize(); ++i) {
-    Rectangle<double> r = pointStorage_.getItem(i).getBoundingRect();
-    if (first) {
-      minX = r.topLeft().x();
-      maxY = r.topLeft().y();
-      maxX = r.bottomRight().x();
-      minY = r.bottomRight().y();
-      first = false;
-    } else {
-      minX = std::min<double>(minX, r.topLeft().x());
-      maxY = std::max<double>(maxY, r.topLeft().y());
-      maxX = std::max<double>(maxX, r.bottomRight().x());
-      minY = std::min<double>(minY, r.bottomRight().y());
-    }
-  }
-  for (size_t i = 0; i < segmentStorage_.getSize(); ++i) {
-    Rectangle<double> r = segmentStorage_.getItem(i).getBoundingRect();
-    if (first) {
-      minX = r.topLeft().x();
-      maxY = r.topLeft().y();
-      maxX = r.bottomRight().x();
-      minY = r.bottomRight().y();
-      first = false;
-    } else {
-      minX = std::min<double>(minX, r.topLeft().x());
-      maxY = std::max<double>(maxY, r.topLeft().y());
-      maxX = std::max<double>(maxX, r.bottomRight().x());
-      minY = std::min<double>(minY, r.bottomRight().y());
-    }
-  }
-  for (size_t i = 0; i < circleStorage_.getSize(); ++i) {
-    Rectangle<double> r = circleStorage_.getItem(i).getBoundingRect();
-    if (first) {
-      minX = r.topLeft().x();
-      maxY = r.topLeft().y();
-      maxX = r.bottomRight().x();
-      minY = r.bottomRight().y();
-      first = false;
-    } else {
-      minX = std::min<double>(minX, r.topLeft().x());
-      maxY = std::max<double>(maxY, r.topLeft().y());
-      maxX = std::max<double>(maxX, r.bottomRight().x());
-      minY = std::min<double>(minY, r.bottomRight().y());
-    }
-  }
+  for (size_t i = 0; i < pointStorage_.getSize(); ++i)
+    rects.addItem(pointStorage_.getItem(i).getBoundingRect());
+  for (size_t i = 0; i < segmentStorage_.getSize(); ++i)
+    rects.addItem(segmentStorage_.getItem(i).getBoundingRect());
+  for (size_t i = 0; i < circleStorage_.getSize(); ++i)
+    rects.addItem(circleStorage_.getItem(i).getBoundingRect());
 
-  return Rectangle<double>(point_coor<double>(minX, maxY),
-                           point_coor<double>(maxX, minY));
+  if (rects.getSize() == 0)
+    return Rectangle<double>();
+
+  Rectangle<double> result = rects.getItem(0);
+  for (size_t i = 1; i < rects.getSize(); ++i)
+    result = result.unite(rects.getItem(i));
+
+  return result;
 }
 
 double App::sumErrors() {
-    double total = 0.0;
-    for (size_t i = 0; i < relationStorage_.getSize(); ++i) {
-        Relation* relation = relationStorage_.getItem(i);
-        if (relation != nullptr) {
-            total += relation->error();
-        }
+  double total = 0.0;
+  for (size_t i = 0; i < relationStorage_.getSize(); ++i) {
+    Relation *relation = relationStorage_.getItem(i);
+    if (relation != nullptr) {
+      total += relation->error();
     }
-    return total;
+  }
+  return total;
 }
 bool App::solve() {
   // Пока работаем только с одним требованием
