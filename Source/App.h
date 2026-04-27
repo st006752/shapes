@@ -2,6 +2,7 @@
 #include "Storage.h"
 #include "Identi.h"
 #include "Shapes.h"
+#include "Rectangle.h"
 
 
 class App{
@@ -21,6 +22,8 @@ public:
     double sumErrors();
 	
 	bool solve();
+
+    Rectangle<double> unionRect() const;
 
     
     Storage<Point<double>>& getPoints() { return pointStorage_; }
