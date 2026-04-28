@@ -1,5 +1,5 @@
-#include "App.h"
 #include <iostream>
+#include "App.h"
 
 void printMenu() {
     std::cout << "\n--- Menu ---\n";
@@ -136,7 +136,7 @@ int main() {
             }
 
             case 7: {
-                Rectangle<double> r = app.unionRect();
+                Rect<double> r = app.unionRect();
                 std::cout << "Bounding rectangle:\n";
                 std::cout << "  top-left:     (" << r.topLeft().x()     << ", " << r.topLeft().y()     << ")\n";
                 std::cout << "  bottom-right: (" << r.bottomRight().x() << ", " << r.bottomRight().y() << ")\n";
