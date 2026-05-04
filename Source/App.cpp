@@ -1,8 +1,12 @@
-#include <windows.h>
-#include "App.h"
-#include "Relations.h"
+//#include <windows.h>
+#include <algorithm>
 #include <cmath>
 #include <iostream>
+
+#include "App.h"
+#include "Relations.h"
+#include "BitmapPrinter.h"
+#include "CTransform.h"
 
 
 int App::count = 0;
@@ -194,67 +198,175 @@ void App::scaleToFit(size_t& outW, size_t& outH) {
   double h  = bounds.height();
 
   const double minSize = 256.0;
-  const double screenW = static_cast<double>(GetSystemMetrics(SM_CXSCREEN));
-  const double screenH = static_cast<double>(GetSystemMetrics(SM_CYSCREEN));
-  const double maxSize = std::min(screenW, screenH);
+  const double screenW = 1920.0;
+  //static_cast<double>(GetSystemMetrics(SM_CXSCREEN));
+  const double screenH = 1280.0;
+	  //static_cast<double>(GetSystemMetrics(SM_CYSCREEN));
 
-  if (w > 0.0 && h > 0.0 && (w < minSize || h < minSize)) {
-    double ratio = w / h;
+  double alpha = 1.0;
+  if (w > 0.0 && h > 0.0)
+    alpha = std::min(screenW / w, screenH / h);
+  else if (w > 0.0)
+    alpha = screenW / w;
+  else if (h > 0.0)
+    alpha = screenH / h;
 
-    if (w <= h) {
-      outW = static_cast<size_t>(minSize);
-      outH = static_cast<size_t>(minSize / ratio);
-    } else {
-      outH = static_cast<size_t>(minSize);
-      outW = static_cast<size_t>(minSize * ratio);
-    }
-  } else if (w > 0.0 && h > 0.0 && (w > maxSize || h > maxSize)) {
-    double ratio = w / h;
-
-    if (w >= h) {
-      outW = static_cast<size_t>(maxSize);
-      outH = static_cast<size_t>(maxSize / ratio);
-    } else {
-      outH = static_cast<size_t>(maxSize);
-      outW = static_cast<size_t>(maxSize * ratio);
-    }
-  } else {
-    double alpha = 1.0;
+  if (w > 0.0 || h > 0.0) {
+    double alphaMin = 1.0;
     if (w > 0.0 && h > 0.0)
-      alpha = std::min(screenW / w, screenH / h);
+      alphaMin = std::max(minSize / w, minSize / h);
     else if (w > 0.0)
-      alpha = screenW / w;
-    else if (h > 0.0)
-      alpha = screenH / h;
-
-      if (w > 0.0 || h > 0.0) {
-      double alphaMin = 1.0;
-      if (w > 0.0 && h > 0.0)
-        alphaMin = std::max(minSize / w, minSize / h);
-      else if (w > 0.0)
-        alphaMin = minSize / w;
-      else
-        alphaMin = minSize / h;
-
-        double alphaMax = 1.0;
-      if (w > 0.0 && h > 0.0)
-        alphaMax = std::min(screenW / w, screenH / h);
-      else if (w > 0.0)
-        alphaMax = screenW / w;
-      else
-        alphaMax = screenH / h;
-
-      alpha = std::max(alphaMin, std::min(alpha, alphaMax));
-    }
-
-    if (w > 0.0)
-      outW = static_cast<size_t>(alpha * w);
+      alphaMin = minSize / w;
     else
-      outW = static_cast<size_t>(minSize);
+      alphaMin = minSize / h;
 
-    if (h > 0.0)
-      outH = static_cast<size_t>(alpha * h);
+    double alphaMax = 1.0;
+    if (w > 0.0 && h > 0.0)
+      alphaMax = std::min(screenW / w, screenH / h);
+    else if (w > 0.0)
+      alphaMax = screenW / w;
     else
-      outH = static_cast<size_t>(minSize);
+      alphaMax = screenH / h;
+
+    alpha = std::max(alphaMin, std::min(alpha, alphaMax));
   }
+
+  for (size_t i = 0; i < pointStorage_.getSize(); ++i) {
+    Point<double>& p = pointStorage_.getItem(i);
+    p.set_x(alpha * (p.x() - x0));
+    p.set_y(alpha * (p.y() - y0));
+  }
+  for (size_t i = 0; i < segmentStorage_.getSize(); ++i) {
+    Segment<double>& s = segmentStorage_.getItem(i);
+    s.set_p1(Point<double>(alpha * (s.p1().x() - x0), alpha * (s.p1().y() - y0)));
+    s.set_p2(Point<double>(alpha * (s.p2().x() - x0), alpha * (s.p2().y() - y0)));
+  }
+  for (size_t i = 0; i < circleStorage_.getSize(); ++i) {
+    Circle<double>& c = circleStorage_.getItem(i);
+    c.set_center(Point<double>(alpha * (c.center().x() - x0),
+                               alpha * (c.center().y() - y0)));
+    c.set_radius(alpha * c.radius());
+  }
+
+  if (w > 0.0)
+    outW = static_cast<size_t>(alpha * w);
+  else
+    outW = static_cast<size_t>(minSize);
+
+  if (h > 0.0)
+    outH = static_cast<size_t>(alpha * h);
+  else
+    outH = static_cast<size_t>(minSize);
+}
+
+Rect<double> getDestRect(const Rect<double>& bounds) {
+	double x0 = bounds.topLeft().x();
+	double y0 = bounds.bottomRight().y();
+	double w = bounds.width();
+	double h = bounds.height();
+
+	const double minSize = 256.0;
+	const double screenW = 1920.0;//static_cast<double>(GetSystemMetrics(SM_CXSCREEN));
+	const double screenH = 1060.0;// static_cast<double>(GetSystemMetrics(SM_CYSCREEN));
+	const double maxSize = std::min(screenW, screenH);
+
+	double outW = 0.0;
+	double outH = 0.0;
+
+
+	if (w > 0.0 && h > 0.0 && (w < minSize || h < minSize)) {
+		double ratio = w / h;
+
+		if (w <= h) {
+			outW = static_cast<size_t>(minSize);
+			outH = static_cast<size_t>(minSize / ratio);
+		}
+		else {
+			outH = static_cast<size_t>(minSize);
+			outW = static_cast<size_t>(minSize * ratio);
+		}
+	}
+	else if (w > 0.0 && h > 0.0 && (w > maxSize || h > maxSize)) {
+		double ratio = w / h;
+
+		if (w >= h) {
+			outW = static_cast<size_t>(maxSize);
+			outH = static_cast<size_t>(maxSize / ratio);
+		}
+		else {
+			outH = static_cast<size_t>(maxSize);
+			outW = static_cast<size_t>(maxSize * ratio);
+		}
+	}
+	else {
+		double alpha = 1.0;
+		if (w > 0.0 && h > 0.0)
+			alpha = std::min(screenW / w, screenH / h);
+		else if (w > 0.0)
+			alpha = screenW / w;
+		else if (h > 0.0)
+			alpha = screenH / h;
+
+		if (w > 0.0 || h > 0.0) {
+			double alphaMin = 1.0;
+			if (w > 0.0 && h > 0.0)
+				alphaMin = std::max(minSize / w, minSize / h);
+			else if (w > 0.0)
+				alphaMin = minSize / w;
+			else
+				alphaMin = minSize / h;
+
+			double alphaMax = 1.0;
+			if (w > 0.0 && h > 0.0)
+				alphaMax = std::min(screenW / w, screenH / h);
+			else if (w > 0.0)
+				alphaMax = screenW / w;
+			else
+				alphaMax = screenH / h;
+
+			alpha = std::max(alphaMin, std::min(alpha, alphaMax));
+		}
+
+		if (w > 0.0)
+			outW = static_cast<size_t>(alpha * w);
+		else
+			outW = static_cast<size_t>(minSize);
+
+		if (h > 0.0)
+			outH = static_cast<size_t>(alpha * h);
+		else
+			outH = static_cast<size_t>(minSize);
+	}
+
+	return Rect<double>({ 0,outH }, { outW,0 });
+}
+
+
+void App::print(const char* filename) {
+	Rect<double> originalRect = unionRect();	
+	
+	Rect<double> destRect = getDestRect(originalRect);
+
+	CTransform transform(originalRect, destRect);
+
+	
+	BitmapPrinter printer(
+		static_cast<size_t>(destRect.width()) + 1,
+		static_cast<size_t>(destRect.height()) + 1 );
+
+
+	for (size_t i = 0; i < pointStorage_.getSize(); ++i) {
+		printer.drawPoint( transform(pointStorage_.getItem(i)) );
+	}
+
+	for (size_t i = 0; i < segmentStorage_.getSize(); ++i) {
+		Segment<double> origSegment = segmentStorage_.getItem(i);
+		printer.drawSegment(transform(origSegment));
+	}
+	for (size_t i = 0; i < circleStorage_.getSize(); ++i) {
+		printer.drawCircle(transform(circleStorage_.getItem(i)));
+	}
+
+	printer.save2File(filename);
+
 }

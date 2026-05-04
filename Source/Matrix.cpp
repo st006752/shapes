@@ -13,6 +13,9 @@ Matrix::Matrix(size_t rows, size_t cols): rows_(rows), cols_(cols)
     for (int i = 0; i < rows; i++)
     {
         array_[i] = new bool[cols];
+		for (int c = 0; c < cols; ++c) {
+			array_[i][c] = false;
+		}
     }
 }
 Matrix::~Matrix()
