@@ -10,6 +10,7 @@ void printMenu() {
     std::cout << "5. Show all objects\n";
     std::cout << "6. Show sum of errors\n";
     std::cout << "7. Show bounding rectangle\n";
+	std::cout << "8. Print to file\n";
     std::cout << "0. Quit\n";
     std::cout << "> ";
 }
@@ -29,37 +30,37 @@ void printMutualArrangeTypes() {
 int main() {
     App app;
 
-    Identi p1 = app.addObject(PrimitiveType::POINT);
-    Point<double>* pt1 = app.findObjectById(p1, app.getPoints());
-    if (pt1) { pt1->set_x(0); pt1->set_y(0); }
+	Identi p1 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt1 = app.findObjectById(p1, app.getPoints());
+	if (pt1) { pt1->set_x(0); pt1->set_y(0); }
 
-    Identi p2 = app.addObject(PrimitiveType::POINT);
-    Point<double>* pt2 = app.findObjectById(p2, app.getPoints());
-    if (pt2) { pt2->set_x(100); pt2->set_y(0); }
+	Identi p2 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt2 = app.findObjectById(p2, app.getPoints());
+	if (pt2) { pt2->set_x(100); pt2->set_y(0); }
 
-    Identi p3 = app.addObject(PrimitiveType::POINT);
-    Point<double>* pt3 = app.findObjectById(p3, app.getPoints());
-    if (pt3) { pt3->set_x(100); pt3->set_y(100); }
+	Identi p3 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt3 = app.findObjectById(p3, app.getPoints());
+	if (pt3) { pt3->set_x(100); pt3->set_y(100); }
 
-    Identi p4 = app.addObject(PrimitiveType::POINT);
-    Point<double>* pt4 = app.findObjectById(p4, app.getPoints());
-    if (pt4) { pt4->set_x(0); pt4->set_y(100); }
+	Identi p4 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt4 = app.findObjectById(p4, app.getPoints());
+	if (pt4) { pt4->set_x(0); pt4->set_y(100); }
 
-    Identi s1 = app.addObject(PrimitiveType::SEGMENT);
-    Segment<double>* seg1 = app.findObjectById(s1, app.getSegments());
-    if (seg1) {
-        seg1->set_p1(Point<double>(0, 0));
-        seg1->set_p2(Point<double>(100, 100));
-    }
-    Identi c1 = app.addObject(PrimitiveType::CIRCLE);
-    Circle<double>* circ1 = app.findObjectById(c1, app.getCircles());
-    if (circ1) {
-        circ1->set_center(Point<double>(50, 50));
-        circ1->set_radius(25);
-    }
-    
+	Identi s1 = app.addObject(PrimitiveType::SEGMENT);
+	Segment<double>* seg1 = app.findObjectById(s1, app.getSegments());
+	if (seg1) {
+		seg1->set_p1(Point<double>(0, 0));
+		seg1->set_p2(Point<double>(100, 100));
+	}
+	Identi c1 = app.addObject(PrimitiveType::CIRCLE);
+	Circle<double>* circ1 = app.findObjectById(c1, app.getCircles());
+	if (circ1) {
+		circ1->set_center(Point<double>(50, 50));
+		circ1->set_radius(25);
+	}
+
+
     int choice = 1;
-    
     while (choice != 0) {
         printMenu();
         std::cin >> choice;
@@ -171,8 +172,15 @@ int main() {
                 std::cout << "Bounding rectangle:\n";
                 std::cout << "  top-left:     (" << r.topLeft().x()     << ", " << r.topLeft().y()     << ")\n";
                 std::cout << "  bottom-right: (" << r.bottomRight().x() << ", " << r.bottomRight().y() << ")\n";
+				 
                 break;
             }
+
+			case 8: {
+				app.print("result.bmp");				
+				break;
+			}
+
         }
     }
 

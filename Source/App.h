@@ -25,6 +25,9 @@ public:
     double sumErrors();
 	
 	bool solve();
+	
+	void print(const char* filename);
+
 
     Rect<double> unionRect() const;
 
