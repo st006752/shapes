@@ -1,13 +1,17 @@
 #ifndef _DICTPARA_26
 #define _DICTPARA_26
 
+#include <stdexcept>
+#include <string>
+
+template <typename key, typename value> 
 class DictPara {
-	stroka word_;
-	stroka translate_;
+	key word_;
+	value translate_;
 public:
-	DictPara() : word_(""), translate_("") {}
-	DictPara(const stroka& word, const stroka& translate) : word_(word), translate_(translate) {}
-    DictPara(stroka&& word, stroka&& translate) :
+	DictPara() : word_(), translate_() {}
+	DictPara(const key& word, const value& translate) : word_(word), translate_(translate) {}
+    DictPara(key&& word, value&& translate) :
 		word_(std::move(word)), translate_(std::move(translate)) {}
 
 	DictPara(DictPara&& other) noexcept : word_(std::move(other.word_)),
@@ -30,8 +34,16 @@ public:
         return *this;
     }
 
-	const stroka& get_word() const { return word_; };
-	const stroka& get_translate() const { return translate_; }
+	const key& get_word() const { return word_; };
+	const value& get_translate() const { return translate_; }
+	
+	value& operator[](const key& k) {
+		return translate_;
+	}
+	const value& operator[](const key& k) const {
+		return translate_;
+	}
+	
 	bool operator==(const DictPara& other) const {return word_ == other.word_;}
     bool operator!=(const DictPara& other) const {return word_ != other.word_;}
     bool operator<(const DictPara& other) const {return word_ < other.word_;}
