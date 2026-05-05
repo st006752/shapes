@@ -56,7 +56,7 @@ void Bitmap::Save(const char* filename) {
 	const auto width = matrix_.cols();
 
 	for (int y = height - 1; y >= 0; y--) {
-		std::fill(row, row + (rowSize - 1), 0);
+		std::fill(row, row + rowSize, 0);
 
 		for (int x = 0; x < width; x++) {
 			if (matrix_.get(y, x)) {
@@ -99,14 +99,14 @@ void Bitmap::Load(const char *filename) {
 	Bitmap img(width, height);
 
 	int rowSize = ((width + 31) / 32) * 4;
-	bool * row = new bool[rowSize];
+	unsigned char* row = new unsigned char[rowSize];
 
 	for (int y = height - 1; y >= 0; y--) {
 		f.read((char*)row, rowSize);
 
 		for (int x = 0; x < width; x++) {
 			int bit = (row[x / 8] >> (7 - (x % 8))) & 1;
-			img.Set(x, y, bit);
+			img.Set(y, x, bit);
 		}
 	}
 	delete[] row;
