@@ -376,3 +376,114 @@ TEST(CTransform, Square2square) {
 }
 
 
+TEST(Bitmap, GetDimensions) {
+	const size_t width = 64;
+	const size_t height = 48;
+	Bitmap bmp(height, width);
+
+EXPECT_EQ(bmp.GetWidth(), width);
+EXPECT_EQ(bmp.GetHeight(), height);
+}
+
+TEST(Bitmap, SetAndGet) {
+	const size_t width = 10;
+	const size_t height = 10;
+	Bitmap bmp(width, height);
+
+	bmp.Set(5, 3, true);
+EXPECT_TRUE(bmp.Get(5, 3));
+
+	for (size_t r = 0; r < height; ++r) {
+		for (size_t c = 0; c < width; ++c) {
+			if (r == 5 && c == 3) continue;
+		 EXPECT_FALSE(bmp.Get(r, c));
+		}
+	}
+}
+
+TEST(Bitmap, MultipleSetGet) {
+	const size_t width = 16;
+	const size_t height = 16;
+	Bitmap bmp(width, height);
+
+	bmp.Set(0, 0, true);
+	bmp.Set(15, 15, true);
+	bmp.Set(7, 8, true);
+	bmp.Set(8, 7, true);
+
+EXPECT_TRUE(bmp.Get(0, 0));
+EXPECT_TRUE(bmp.Get(15, 15));
+EXPECT_TRUE(bmp.Get(7, 8));
+EXPECT_TRUE(bmp.Get(8, 7));
+
+EXPECT_FALSE(bmp.Get(0, 1));
+EXPECT_FALSE(bmp.Get(1, 0));
+EXPECT_FALSE(bmp.Get(15, 14));
+EXPECT_FALSE(bmp.Get(14, 15));
+}
+
+TEST(BitmapPrinter, DrawSinglePoint) {
+	const size_t width = 32;
+	const size_t height = 32;
+
+	BitmapPrinter printer(width, height);
+	printer.drawPoint(Point<double>(10, 15));
+}
+
+TEST(BitmapPrinter, DrawSegment) {
+	const size_t width = 32;
+	const size_t height = 32;
+
+	BitmapPrinter printer(width, height);
+	Segment<double> seg;
+	seg.set_p1(Point<double>(5, 5));
+	seg.set_p2(Point<double>(10, 10));
+	printer.drawSegment(seg);
+}
+
+
+TEST(BitmapSimple, CreateEmpty) {
+	Bitmap bmp(10, 10);
+	for (size_t r = 0; r < 10; ++r)
+		for (size_t c = 0; c < 10; ++c)
+		 EXPECT_FALSE(bmp.Get(r, c));
+}
+
+TEST(BitmapSimple, SetGet) {
+	Bitmap bmp(5, 5);
+	bmp.Set(2, 3, true);
+ EXPECT_TRUE(bmp.Get(2, 3));
+}
+
+TEST(BitmapSimple, SetOnePixel) {
+	Bitmap bmp(8, 8);
+	bmp.Set(0, 0, true);
+	bmp.Set(7, 7, true);
+ EXPECT_TRUE(bmp.Get(0, 0));
+ EXPECT_TRUE(bmp.Get(7, 7));
+ EXPECT_FALSE(bmp.Get(0, 1));
+ EXPECT_FALSE(bmp.Get(1, 0));
+}
+
+TEST(BitmapSimple, Dimensions) {
+	Bitmap bmp(100, 50);
+ EXPECT_EQ(bmp.GetWidth(), 50);
+ EXPECT_EQ(bmp.GetHeight(), 100);
+}
+
+TEST(BitmapSimple, SaveLoadRoundTrip) {
+	Bitmap original(16, 16);
+	original.Set(0, 0, true);
+	original.Set(15, 15, true);
+	
+	original.Save("roundtrip_test.bmp");
+	
+	Bitmap loaded(1, 1);
+	loaded.Load("roundtrip_test.bmp");
+	
+ EXPECT_EQ(loaded.GetWidth(), 16u);
+ EXPECT_EQ(loaded.GetHeight(), 16u);
+	
+ EXPECT_TRUE(loaded.Get(0, 0));
+ EXPECT_TRUE(loaded.Get(15, 15));
+}
