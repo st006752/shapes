@@ -9,3 +9,13 @@ public:
         return ID == other.ID;
     }
 };
+
+class ParamId {
+
+public:
+	ParamId();
+
+	bool operator==(const ParamId& other)const {
+
+	}
+};
