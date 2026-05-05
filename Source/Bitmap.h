@@ -14,6 +14,9 @@ public:
     matrix_.set(r, c, state);
   }
 
+  size_t GetWidth() const { return matrix_.cols(); }
+  size_t GetHeight() const { return matrix_.rows(); }
+
   void Save(const char* filename);
   void Load(const char *filename);
 
