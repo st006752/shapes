@@ -11,6 +11,7 @@ void printMenu() {
     std::cout << "6. Show sum of errors\n";
     std::cout << "7. Show bounding rectangle\n";
 	std::cout << "8. Print to file\n";
+	std::cout << "9. Solve the errors\n";
     std::cout << "0. Quit\n";
     std::cout << "> ";
 }
@@ -57,6 +58,53 @@ int main() {
 	if (circ1) {
 		circ1->set_center(Point<double>(50, 50));
 		circ1->set_radius(25);
+	}
+
+	// Additional points
+	Identi p5 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt5 = app.findObjectById(p5, app.getPoints());
+	if (pt5) { pt5->set_x(50); pt5->set_y(50); }
+
+	Identi p6 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt6 = app.findObjectById(p6, app.getPoints());
+	if (pt6) { pt6->set_x(150); pt6->set_y(50); }
+
+	Identi p7 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt7 = app.findObjectById(p7, app.getPoints());
+	if (pt7) { pt7->set_x(100); pt7->set_y(150); }
+
+	Identi p8 = app.addObject(PrimitiveType::POINT);
+	Point<double>* pt8 = app.findObjectById(p8, app.getPoints());
+	if (pt8) { pt8->set_x(50); pt8->set_y(150); }
+
+	// Additional segments
+	Identi s2 = app.addObject(PrimitiveType::SEGMENT);
+	Segment<double>* seg2 = app.findObjectById(s2, app.getSegments());
+	if (seg2) {
+		seg2->set_p1(Point<double>(100, 0));
+		seg2->set_p2(Point<double>(100, 100));
+	}
+
+	Identi s3 = app.addObject(PrimitiveType::SEGMENT);
+	Segment<double>* seg3 = app.findObjectById(s3, app.getSegments());
+	if (seg3) {
+		seg3->set_p1(Point<double>(0, 100));
+		seg3->set_p2(Point<double>(150, 100));
+	}
+
+	// Additional circles
+	Identi c2 = app.addObject(PrimitiveType::CIRCLE);
+	Circle<double>* circ2 = app.findObjectById(c2, app.getCircles());
+	if (circ2) {
+		circ2->set_center(Point<double>(150, 75));
+		circ2->set_radius(30);
+	}
+
+	Identi c3 = app.addObject(PrimitiveType::CIRCLE);
+	Circle<double>* circ3 = app.findObjectById(c3, app.getCircles());
+	if (circ3) {
+		circ3->set_center(Point<double>(100, 150));
+		circ3->set_radius(20);
 	}
 
 
@@ -180,6 +228,10 @@ int main() {
 				app.print("result.bmp");				
 				break;
 			}
+
+            case 9: {
+                app.solve();
+            }
 
         }
     }
