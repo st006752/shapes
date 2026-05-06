@@ -1,15 +1,12 @@
 #ifndef _DICTPARA_26
 #define _DICTPARA_26
 
-#include <stdexcept>
-#include <string>
-
-template <typename key, typename value> 
+template < typename key, typename value >
 class DictPara {
 	key word_;
 	value translate_;
 public:
-	DictPara() : word_(), translate_() {}
+	DictPara() = default;
 	DictPara(const key& word, const value& translate) : word_(word), translate_(translate) {}
     DictPara(key&& word, value&& translate) :
 		word_(std::move(word)), translate_(std::move(translate)) {}
@@ -34,16 +31,8 @@ public:
         return *this;
     }
 
-	const key& get_word() const { return word_; };
-	const value& get_translate() const { return translate_; }
-	
-	value& operator[](const key& k) {
-		return translate_;
-	}
-	const value& operator[](const key& k) const {
-		return translate_;
-	}
-	
+	const key& get_key() const { return word_; };
+	const value& get_value() const { return translate_; }
 	bool operator==(const DictPara& other) const {return word_ == other.word_;}
     bool operator!=(const DictPara& other) const {return word_ != other.word_;}
     bool operator<(const DictPara& other) const {return word_ < other.word_;}
