@@ -1,5 +1,11 @@
 #ifndef _MY_ARRAY_26_
-#define _MY_ARRAY_26
+#define _MY_ARRAY_26_
+
+#include <cstddef>
+#include <cstdlib>
+#include <iostream>
+#include <stdexcept>
+#include <utility>
 
 template <typename T>
 class Array {

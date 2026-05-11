@@ -1,6 +1,8 @@
 #ifndef _DICTPARA_26
 #define _DICTPARA_26
 
+#include <utility>
+
 template < typename key, typename value >
 class DictPara {
 	key word_;
