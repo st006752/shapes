@@ -7,6 +7,10 @@ add_library(applib
     Storage.cpp
 )
 
+target_include_directories(applib PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/Storages-shapes
+)
+
 add_executable(shapes_app main.cpp)
 target_link_libraries(shapes_app applib)
 
