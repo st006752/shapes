@@ -20,4 +20,4 @@ public:
 	void insert(const key& k, const value& v) {
         list_.push_back(DictPara(k, v));
     }
-}
+};
