@@ -1,3 +1,6 @@
 [submodule "Storages-shapes"]
 	path = Storages-shapes
 	url = https://github.com/pinks111/Storages-shapes
+[submodule "applib/external/Storages-shapes"]
+	path = applib/external/Storages-shapes
+	url = https://github.com/pinks111/Storages-shapes.git

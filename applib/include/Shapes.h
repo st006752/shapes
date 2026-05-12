@@ -1,11 +1,12 @@
 #pragma once
-#include "Identi.h"
-#include "Storage.h"
-#include "Dictionaries/DictArray.h"
-#include "Rectangle.h"
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+
+#include "Identi.h"
+#include "Storage.h"
+#include "DictArray.h"
+#include "Rectangle.h"
 
 enum class PrimitiveType{ POINT, SEGMENT, CIRCLE, RECTANGLE };
 
