@@ -59,11 +59,11 @@ public:
     virtual Storage<double> getParameters() const = 0;
 	virtual void setParameters(const Storage<double>&) = 0;	
 
-	virtual ArrayDict<ParamId, double> getIdParameters() const = 0;
+	virtual DictArray<ParamId, double> getIdParameters() const = 0;
 
 	virtual Storage<double> partitions() const = 0;
 
-	virtual ArrayDict<ParamId, double> getIdPartitions() const = 0;
+	virtual DictArray<ParamId, double> getIdPartitions() const = 0;
 
     double error() const { return std::abs(measure() - value_);  }
     
